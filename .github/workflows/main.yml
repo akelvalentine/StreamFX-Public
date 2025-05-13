@@ -174,15 +174,20 @@ jobs:
       run: |
         curl "-kL" "https://www.dropbox.com/scl/fi/sda9ecx9qzqiaq8ifryi1/innosetup-6.2.1.exe?rlkey=5jf07t109j34dppvmuen36271&dl=1" "-f" "--retry" "5" "-o" "inno.exe"
         .\inno.exe /VERYSILENT /SP- /SUPPRESSMSGBOXES /NORESTART
-    - name: "Packaging"
-      shell: cmd
-      run: |
-        "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" /V10 ".\build\ci\installer.iss"
-    - name: "Artifacts"
-      uses: actions/upload-artifact@v3
-      with:
-        name: "${{ matrix.runner }}-${{ matrix.compiler }}-qt${{ matrix.qt }}"
-        path: "${{ github.workspace }}/build/package"
+ - name: "Packaging"
+                  shell: cmd
+                  run: |
+                    "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" /V10 ".\build\ci\installer.iss"
+                - name: "Where are my files?"
+                  shell: bash
+                  run: |
+                    echo "Looking inside ${{ github.workspace }}/build/package:"
+                    ls -la "${{ github.workspace }}/build/package"
+                - name: "Artifacts"
+                  uses: actions/upload-artifact@v1
+                  with:
+                    name: "${{ matrix.runner }}-${{ matrix.compiler }}-qt${{ matrix.qt }}"
+                    path: "${{ github.workspace }}/build/package""
   macos:
     strategy:
       fail-fast: false
